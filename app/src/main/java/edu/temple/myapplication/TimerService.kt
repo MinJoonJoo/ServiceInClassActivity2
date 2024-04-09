@@ -25,14 +25,7 @@ class TimerService : Service() {
             get() = this@TimerService.isRunning
             set(value) {this@TimerService.isRunning = value}
         fun start(startValue: Int){
-            if (!paused) {
-                if (!isRunning) {
-                    if (::t.isInitialized) t.interrupt()
-                    this@TimerService.start(startValue)
-                }
-            } else {
-                pause()
-            }
+            start(startValue, null)
         }
         // Start a new timer
         fun start(startValue: Int,timerHandler: Handler?){
