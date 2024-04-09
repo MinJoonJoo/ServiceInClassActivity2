@@ -46,7 +46,6 @@ class TimerService : Service() {
         fun pause() {
             this@TimerService.pause()
         }
-
     }
 
     override fun onCreate() {
