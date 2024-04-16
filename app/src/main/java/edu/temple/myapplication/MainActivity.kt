@@ -8,27 +8,23 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.widget.Button
+import android.view.Menu
+import android.view.MenuItem
 
 class MainActivity : AppCompatActivity() {
 
-    val handler = Handler(Looper.getMainLooper()){
-        true
-    }
-    var timerBinder : TimerService.TimerBinder? =null
+    var timerBinder: TimerService.TimerBinder? = null
 
-    val serviceConnection = object: ServiceConnection{
+    private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             timerBinder = service as TimerService.TimerBinder
-
-
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             timerBinder = null
-                  }
-
+        }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -39,21 +35,25 @@ class MainActivity : AppCompatActivity() {
             serviceConnection,
             BIND_AUTO_CREATE
         )
-        findViewById<Button>(R.id.startButton).setOnClickListener {
-            timerBinder?.start(100)
-        }
-
-        findViewById<Button>(R.id.pauseButton).setOnClickListener {
-            timerBinder?.pause()
-        }
-        
-        findViewById<Button>(R.id.stopButton).setOnClickListener {
-            timerBinder?.stop()
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unbindService(serviceConnection)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.timer_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.start_timer -> timerBinder?.start(100)
+            R.id.pause_timer -> timerBinder?.pause()
+            R.id.stop_timer -> timerBinder?.stop()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 }
